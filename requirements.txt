@@ -1,4 +1,6 @@
 dependency_injector
+pytest
 schematics
 sqlalchemy
 tornado
+typeguard
