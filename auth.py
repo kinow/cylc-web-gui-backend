@@ -1,3 +1,5 @@
+import logging
+
 from abc import ABC
 
 from tornado.web import RequestHandler
@@ -15,12 +17,20 @@ class UsernamePasswordAuthenticationPayload(AuthenticationPayload):
 class Authenticator():
     """An authenticator service."""
 
-    name: str = None
+    _name: str = None
 
     @typechecked()
-    def __init__(self, name: str = None):
-        self.name = name
+    def __init__(self, name: str, logger: logging.Logger):
+        self._name = name
+        self._logger = logger
+        self._logger.info(f"Authenticator {self._name} created!")
+
+    @property
+    def name(self):
+        return self._name
 
     @typechecked()
     def authenticate(self, handler: RequestHandler):
         """Authenticate a request."""
+        self._logger.fatal("Not implemented!")
+        raise NotImplemented()

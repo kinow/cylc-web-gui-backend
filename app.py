@@ -1,20 +1,20 @@
+import logging
 import tornado.ioloop
 import tornado.web
+import sys
 
 from auth import Authenticator
 
+from container import IocContainer
+
 
 class MainHandler(tornado.web.RequestHandler):
-
-    def __init__(self, application, request, **kwargs):
-        super().__init__(application, request, **kwargs)
-        self._authenticator = None
 
     def initialize(self, authenticator: Authenticator):
         self._authenticator = authenticator
 
     def get(self):
-        self.write(str(self._authenticator))
+        self.write(self._authenticator.name)
         self.write("<br/>Hello")
 
 
@@ -24,7 +24,12 @@ class FaviconHandler(tornado.web.RequestHandler):
 
 
 def make_app():
-    authenticator = None
+    # Configure container:
+    container = IocContainer()
+    container.logger().addHandler(logging.StreamHandler(sys.stdout))
+
+    authenticator = container.auth_service()
+
     return tornado.web.Application([
         (r"/", MainHandler, {"authenticator": authenticator}),
         (r"/favicon.ico", FaviconHandler)
